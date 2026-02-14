@@ -13,10 +13,43 @@ model User {
   password  String
   role      Role     @default(PLAYER)
   createdAt DateTime @default(now())
+  tournaments Tournament[]
+  registrations Registration[]
+
+
 }
 
 enum Role {
   ADMIN
   ORGANIZER
   PLAYER
+}
+model Tournament {
+  id          String   @id @default(uuid())
+  title       String
+  description String
+  game        String
+  entryFee    Float
+  prizePool   Float
+  status      String   @default("DRAFT")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  organizerId String
+  organizer   User     @relation(fields: [organizerId], references: [id])
+  registrations Registration[]
+  maxParticipants Int @default(100)
+
+}
+
+model Registration {
+  id           String   @id @default(uuid())
+  userId       String
+  tournamentId String
+  createdAt    DateTime @default(now())
+
+  user        User       @relation(fields: [userId], references: [id])
+  tournament  Tournament @relation(fields: [tournamentId], references: [id])
+
+  @@unique([userId, tournamentId]) // prevent duplicate registration
 }
