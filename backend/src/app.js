@@ -7,6 +7,12 @@ const userRoutes = require("./routes/user.routes"); // 👈 add this
 const app = express();
 
 app.use(cors());
+app.post(
+  "/api/payment/webhook",
+  express.raw({ type: "application/json" }),
+  require("./controllers/payment.controller").handleWebhook
+);
+
 app.use(express.json());
 
 // Mount routes
@@ -22,6 +28,8 @@ app.use("/api/tournament", tournamentRoutes);
 
 const registrationRoutes = require("./routes/registration.routes");
 app.use("/api/registration", registrationRoutes);
+
+
 
 const paymentRoutes = require("./routes/payment.routes");
 app.use("/api/payment", paymentRoutes);

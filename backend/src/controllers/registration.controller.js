@@ -2,11 +2,19 @@ const prisma = require("../utils/prisma");
 
 exports.registerForTournament = async (req, res) => {
   try {
+    if (req.user.role !== "PLAYER") {
+      return res.status(403).json({
+        message: "Only players can register for tournaments"
+      });
+    }
     const { tournamentId } = req.body;
 
     const tournament = await prisma.tournament.findUnique({
       where: { id: tournamentId },
     });
+
+    
+
 
     // 1️⃣ Check if tournament exists
     if (!tournament) {
